@@ -1,6 +1,4 @@
-from pathlib import Path
-
-content = r"""SISTEM REGISTRASI MAHASISWA
+SISTEM REGISTRASI MAHASISWA
 ===========================================
 
 DESKRIPSI PROJECT
