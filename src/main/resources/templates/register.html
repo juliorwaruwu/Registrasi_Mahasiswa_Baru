@@ -1,0 +1,462 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Pendaftaran Mahasiswa Baru</title>
+
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+          rel="stylesheet" />
+
+    <style>
+
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+        }
+
+        body{
+            font-family:'Poppins',sans-serif;
+            background:#f3f3f3;
+            display:flex;
+            justify-content:center;
+            padding:30px 10px;
+        }
+
+        .container{
+            width:100%;
+            max-width:720px;
+            background:white;
+            border-radius:6px;
+            overflow:hidden;
+            box-shadow:0 2px 8px rgba(0,0,0,0.15);
+            border:1px solid #d9d9d9;
+        }
+
+        .header{
+            background:#0d4b78;
+            color:white;
+            text-align:center;
+            padding:18px 20px;
+        }
+
+        .header h2{
+            font-size:26px;
+            font-weight:700;
+            margin-bottom:4px;
+        }
+
+        .header p{
+            font-size:13px;
+            opacity:0.9;
+        }
+
+        form{
+            padding:24px;
+        }
+
+        .form-group{
+            margin-bottom:18px;
+        }
+
+        label{
+            display:block;
+            font-size:14px;
+            font-weight:600;
+            color:#333;
+            margin-bottom:6px;
+        }
+
+        input,
+        textarea,
+        select{
+            width:100%;
+            padding:12px 14px;
+            border:2px solid #d9a5a5;
+            border-radius:4px;
+            font-size:14px;
+            outline:none;
+            transition:0.2s;
+            background:white;
+        }
+
+        input:focus,
+        textarea:focus,
+        select:focus{
+            border-color:#0d4b78;
+        }
+
+        textarea{
+            min-height:90px;
+            resize:none;
+        }
+
+        .hint{
+            margin-top:5px;
+            font-size:11px;
+            color:#8a8a8a;
+        }
+
+        .warning{
+            color:#c98a00;
+            margin-right:4px;
+        }
+
+        .row{
+            display:flex;
+            gap:16px;
+        }
+
+        .row .form-group{
+            flex:1;
+        }
+
+        .captcha-wrapper{
+            display:flex;
+            align-items:center;
+            gap:10px;
+            margin-top:8px;
+        }
+
+        .captcha-box{
+            border:1px dashed #bdbdbd;
+            padding:10px 18px;
+            font-size:26px;
+            letter-spacing:6px;
+            background:#f7f7f7;
+            color:#555;
+            font-weight:600;
+        }
+
+        .refresh-btn{
+            background:#4da3d9;
+            color:white;
+            border:none;
+            padding:10px 14px;
+            border-radius:4px;
+            cursor:pointer;
+            font-size:12px;
+        }
+
+        .submit-btn{
+            width:100%;
+            background:linear-gradient(to right,#5c89aa,#7aa6c4);
+            color:white;
+            border:none;
+            padding:14px;
+            border-radius:4px;
+            font-size:15px;
+            font-weight:600;
+            cursor:pointer;
+            margin-top:10px;
+        }
+
+        .submit-btn:hover{
+            opacity:0.95;
+        }
+
+        .error{
+            color:red;
+            font-size:12px;
+            margin-top:4px;
+        }
+
+        @media(max-width:768px){
+
+            .row{
+                flex-direction:column;
+                gap:0;
+            }
+
+            .header h2{
+                font-size:22px;
+            }
+
+            form{
+                padding:18px;
+            }
+
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="header">
+
+        <h2>Pendaftaran Mahasiswa Baru</h2>
+
+        <p>Tahun Akademik 2026/2027</p>
+
+    </div>
+
+    <form th:action="@{/save}"
+          th:object="${mahasiswa}"
+          method="post">
+
+        <div class="form-group">
+
+            <label>Nama Lengkap *</label>
+
+            <input type="text"
+                   th:field="*{nama}"
+                   placeholder="Contoh : Julior Putra Waruwu">
+
+            <div class="hint">
+
+                <span class="warning">⚠</span>
+
+                Nama lengkap sesuai data diri
+
+            </div>
+
+            <small class="error"
+                   th:errors="*{nama}"></small>
+
+        </div>
+
+        <div class="form-group">
+
+            <label>NIM (Nomor Induk Mahasiswa) *</label>
+
+            <input type="text"
+                   th:field="*{nim}"
+                   placeholder="Input NIM">
+
+            <div class="hint">
+
+                <span class="warning">⚠</span>
+
+                NIM wajib diisi
+
+            </div>
+
+            <small class="error"
+                   th:errors="*{nim}"></small>
+
+        </div>
+
+        <div class="form-group">
+
+            <label>Alamat Email *</label>
+
+            <input type="email"
+                   th:field="*{email}"
+                   placeholder="contoh : julior@jiu.ac">
+
+            <div class="hint">
+
+                <span class="warning">⚠</span>
+
+                Gunakan email aktif untuk konfirmasi pendaftaran
+
+            </div>
+
+            <small class="error"
+                   th:errors="*{email}"></small>
+
+        </div>
+
+        <div class="form-group">
+
+            <label>Nomor Telepon / WhatsApp *</label>
+
+            <input type="text"
+                   th:field="*{nomorHp}"
+                   placeholder="082271514570">
+
+            <div class="hint">
+
+                <span class="warning">⚠</span>
+
+                Contoh : 082271514570 (10-13 digit)
+
+            </div>
+
+            <small class="error"
+                   th:errors="*{nomorHp}"></small>
+
+        </div>
+
+        <div class="row">
+
+            <div class="form-group">
+
+                <label>Tanggal Lahir *</label>
+
+                <input type="date"
+                       th:field="*{tanggalLahir}">
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Program Studi *</label>
+
+                <select th:field="*{prodi}">
+
+                    <option value="" selected disabled>
+                        Pilih Program Studi
+                    </option>
+
+                    <option value="Teknik Informatika">
+                        Teknik Informatika
+                    </option>
+
+                    <option value="Sistem Informasi">
+                        Sistem Informasi
+                    </option>
+
+                    <option value="Akuntansi">
+                        Akuntansi
+                    </option>
+
+                    <option value="Sastra Jepang">
+                        Sastra Jepang
+                    </option>
+
+                    <option value="Sastra Inggris">
+                        Sastra Inggris
+                    </option>
+
+                    <option value="Desain dan Komunikasi Visual">
+                        Desain dan Komunikasi Visual
+                    </option>
+
+                </select>
+
+                <div class="hint">
+
+                    <span class="warning">⚠</span>
+
+                    Mohon pilih program studi
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="form-group">
+
+            <label>Alamat Lengkap *</label>
+
+            <textarea th:field="*{alamat}"
+                      placeholder="Isi dengan alamat lengkap"></textarea>
+
+            <div class="hint">
+
+                <span class="warning">⚠</span>
+
+                Minimal 15 karakter
+
+            </div>
+
+            <small class="error"
+                   th:errors="*{alamat}"></small>
+
+        </div>
+
+        <div class="form-group">
+
+            <label>Asal Sekolah *</label>
+
+            <input type="text"
+                   th:field="*{asalSekolah}"
+                   placeholder="Contoh : SMA CGA">
+
+            <div class="hint">
+
+                <span class="warning">⚠</span>
+
+                Asal sekolah wajib diisi
+
+            </div>
+
+        </div>
+
+        <div class="form-group">
+
+            <label>Kode Keamanan (Captcha) *</label>
+
+            <div class="captcha-wrapper">
+
+                <div class="captcha-box"
+                     id="captchaText">
+
+                    QZGBNO
+
+                </div>
+
+                <button type="button"
+                        class="refresh-btn"
+                        onclick="generateCaptcha()">
+
+                    ↻ Refresh Captcha
+
+                </button>
+
+            </div>
+
+            <input type="text"
+                   id="captchaInput"
+                   placeholder="Masukkan kode captcha di atas"
+                   style="margin-top:10px;">
+
+            <div class="hint">
+
+                <span class="warning">⚠</span>
+
+                Kode tidak case sensitive, klik tombol refresh
+
+            </div>
+
+        </div>
+
+        <button type="submit"
+                class="submit-btn">
+
+            Daftar Sekarang
+
+        </button>
+
+        <p class="error"
+           th:text="${error}"></p>
+
+    </form>
+
+</div>
+
+<script>
+
+    function generateCaptcha() {
+
+        const chars =
+            "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
+        let captcha = "";
+
+        for(let i = 0; i < 6; i++) {
+
+            captcha += chars.charAt(
+                Math.floor(Math.random() * chars.length)
+            );
+
+        }
+
+        document.getElementById("captchaText")
+                .innerText = captcha;
+    }
+
+    generateCaptcha();
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,565 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <title>Dashboard Admin</title>
+
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Poppins", sans-serif;
+        background: #eef2f7;
+        padding: 20px;
+      }
+
+      .container {
+        width: 100%;
+        max-width: 1400px;
+        margin: auto;
+        background: #f8fafc;
+        border-radius: 18px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+      }
+
+      .topbar {
+        background: linear-gradient(135deg, #0b4f79, #13689e);
+
+        color: white;
+
+        padding: 18px 24px;
+
+        display: flex;
+
+        justify-content: space-between;
+
+        align-items: center;
+      }
+
+      .topbar h2 {
+        font-size: 24px;
+        font-weight: 700;
+      }
+
+      .menu {
+        display: flex;
+        gap: 12px;
+      }
+
+      .menu a {
+        text-decoration: none;
+        background: rgba(255, 255, 255, 0.15);
+        color: white;
+        padding: 10px 16px;
+        border-radius: 10px;
+        font-size: 13px;
+        font-weight: 500;
+        transition: 0.3s;
+      }
+
+      .menu a:hover {
+        background: white;
+        color: #0b4f79;
+      }
+
+      .content {
+        padding: 24px;
+      }
+
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+        margin-bottom: 30px;
+      }
+
+      .card {
+        background: white;
+        border-radius: 18px;
+        padding: 28px;
+        border: 1px solid #edf2f7;
+
+        box-shadow:
+          0 10px 25px rgba(0, 0, 0, 0.05),
+          0 2px 8px rgba(0, 0, 0, 0.03);
+
+        transition: 0.3s;
+      }
+
+      .card:hover {
+        transform: translateY(-5px);
+      }
+
+      .card h1 {
+        color: #0b4f79;
+        font-size: 42px;
+        margin-bottom: 8px;
+      }
+
+      .card p {
+        color: #555;
+        font-size: 14px;
+      }
+
+      .chart-container {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 22px;
+        margin-bottom: 30px;
+      }
+
+      .chart-card {
+        background: linear-gradient(145deg, #ffffff, #f4f7fb);
+
+        border-radius: 18px;
+
+        padding: 24px;
+
+        border: 1px solid #e6ecf2;
+
+        box-shadow:
+          0 10px 25px rgba(0, 0, 0, 0.05),
+          0 2px 8px rgba(0, 0, 0, 0.03);
+
+        transition: 0.3s ease;
+      }
+
+      .chart-card:hover {
+        transform: translateY(-4px);
+
+        box-shadow:
+          0 16px 35px rgba(0, 0, 0, 0.08),
+          0 4px 10px rgba(0, 0, 0, 0.04);
+      }
+
+      .chart-card h3 {
+        margin-bottom: 20px;
+        color: #0b4f79;
+        font-size: 17px;
+        font-weight: 700;
+      }
+
+      .chart-box {
+        position: relative;
+        width: 100%;
+        height: 320px;
+      }
+
+      .search-box {
+        margin-bottom: 20px;
+        display: flex;
+        justify-content: flex-end;
+      }
+
+      .search-box input {
+        width: 300px;
+        padding: 12px 16px;
+        border: 1px solid #dbe3eb;
+        border-radius: 12px;
+        outline: none;
+        font-size: 13px;
+        background: white;
+      }
+
+      .search-box input:focus {
+        border-color: #0b5c8e;
+      }
+
+      .table-wrapper {
+        background: white;
+        border-radius: 18px;
+        overflow: hidden;
+        border: 1px solid #edf2f7;
+
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.04);
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      thead {
+        background: #f8fafc;
+      }
+
+      thead th {
+        text-align: left;
+        padding: 16px;
+        font-size: 13px;
+        color: #0f172a;
+        font-weight: 600;
+      }
+
+      tbody td {
+        padding: 16px;
+        font-size: 13px;
+        border-bottom: 1px solid #f1f5f9;
+        color: #334155;
+      }
+
+      tbody tr:hover {
+        background: #f8fbff;
+      }
+
+      .badge {
+        padding: 6px 12px;
+        border-radius: 30px;
+        font-size: 11px;
+        font-weight: 600;
+      }
+
+      .verified {
+        background: #dcfce7;
+        color: #15803d;
+      }
+
+      .pending {
+        background: #fef3c7;
+        color: #b45309;
+      }
+
+      .rejected {
+        background: #fee2e2;
+        color: #b91c1c;
+      }
+
+      .btn {
+        text-decoration: none;
+        background: #0b5c8e;
+        color: white;
+        padding: 8px 14px;
+        border-radius: 10px;
+        font-size: 12px;
+        font-weight: 500;
+        transition: 0.3s;
+      }
+
+      .btn:hover {
+        background: #08486d;
+      }
+
+      @media (max-width: 900px) {
+        .stats {
+          grid-template-columns: 1fr;
+        }
+
+        .chart-container {
+          grid-template-columns: 1fr;
+        }
+
+        .topbar {
+          flex-direction: column;
+          gap: 15px;
+          align-items: flex-start;
+        }
+
+        .table-wrapper {
+          overflow-x: auto;
+        }
+
+        table {
+          min-width: 1100px;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <div class="topbar">
+        <h2>Daftar Calon Mahasiswa</h2>
+
+        <div class="menu">
+          <a th:href="@{/}"> Form Pendaftaran </a>
+
+          <a th:href="@{/admin/dashboard}"> Dashboard </a>
+
+          <a th:href="@{/logout}"> Logout </a>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="stats">
+          <div class="card">
+            <h1 th:text="${total}">0</h1>
+
+            <p>Total Pendaftar</p>
+          </div>
+
+          <div class="card">
+            <h1 th:text="${pending}">0</h1>
+
+            <p>Menunggu Verifikasi</p>
+          </div>
+
+          <div class="card">
+            <h1 th:text="${verified}">0</h1>
+
+            <p>Terverifikasi</p>
+          </div>
+        </div>
+
+        <div class="chart-container">
+          <div class="chart-card">
+            <h3>Status Mahasiswa</h3>
+
+            <div class="chart-box">
+              <canvas id="statusChart"></canvas>
+            </div>
+          </div>
+
+          <div class="chart-card">
+            <h3>Mahasiswa per Prodi</h3>
+
+            <div class="chart-box">
+              <canvas id="prodiChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <div class="search-box">
+          <form action="/admin/search" method="get">
+            <input
+              type="text"
+              name="keyword"
+              placeholder="Cari Nama atau NIM"
+            />
+          </form>
+        </div>
+
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+
+                <th>No Registrasi</th>
+
+                <th>Nama Lengkap</th>
+
+                <th>NIM</th>
+
+                <th>Prodi</th>
+
+                <th>Tanggal Daftar</th>
+
+                <th>Status</th>
+
+                <th>Aksi</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr th:each="m : ${list}">
+                <td th:text="${m.id}"></td>
+
+                <td th:text="${m.nomorRegistrasi}"></td>
+
+                <td th:text="${m.nama}"></td>
+
+                <td th:text="${m.nim}"></td>
+
+                <td th:text="${m.prodi}"></td>
+
+                <td th:text="${m.tanggalDaftar}"></td>
+
+                <td>
+                  <span
+                    th:if="${m.status == 'VERIFIED'}"
+                    class="badge verified"
+                  >
+                    ✔ VERIFIED
+                  </span>
+
+                  <span th:if="${m.status == 'PENDING'}" class="badge pending">
+                    ⏳ PENDING
+                  </span>
+
+                  <span
+                    th:if="${m.status == 'REJECTED'}"
+                    class="badge rejected"
+                  >
+                    ✖ REJECTED
+                  </span>
+                </td>
+
+                <td>
+                  <a
+                    th:if="${m.status == 'PENDING'}"
+                    th:href="@{'/admin/verify/' + ${m.id}}"
+                    class="btn"
+                  >
+                    Verifikasi
+                  </a>
+
+                  <span th:if="${m.status == 'VERIFIED'}"> - </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <script th:inline="javascript">
+      const pending = /*[[${pending}]]*/ 0;
+
+      const verified = /*[[${verified}]]*/ 0;
+
+      const tiCount = /*[[${tiCount}]]*/ 0;
+
+      const siCount = /*[[${siCount}]]*/ 0;
+
+      const akuntansiCount = /*[[${akuntansiCount}]]*/ 0;
+
+      const statusCtx = document.getElementById("statusChart");
+
+      new Chart(statusCtx, {
+        type: "doughnut",
+
+        data: {
+          labels: ["Pending", "Verified"],
+
+          datasets: [
+            {
+              data: [pending, verified],
+
+              backgroundColor: ["#f7b731", "#20bf6b"],
+
+              borderWidth: 0,
+
+              hoverOffset: 12,
+
+              cutout: "72%",
+            },
+          ],
+        },
+
+        options: {
+          responsive: true,
+
+          maintainAspectRatio: false,
+
+          plugins: {
+            legend: {
+              position: "bottom",
+
+              labels: {
+                padding: 20,
+
+                usePointStyle: true,
+
+                pointStyle: "circle",
+
+                font: {
+                  size: 13,
+
+                  family: "Poppins",
+                },
+              },
+            },
+          },
+        },
+      });
+
+      const prodiCtx = document.getElementById("prodiChart");
+
+      new Chart(prodiCtx, {
+        type: "bar",
+
+        data: {
+          labels: [
+            "Teknik Informatika",
+
+            "Sistem Informasi",
+
+            "Akuntansi",
+            "Sastra Jepang",
+            "Sastra Inggris",
+            "Desain dan Komunikasi Visual",
+          ],
+
+          datasets: [
+            {
+              label: "Jumlah Mahasiswa",
+
+              data: [
+                tiCount,
+                tiCount,
+                siCount,
+                akuntansiCount,
+                sastraJepangCount,
+                sastraInggrisCount,
+                desainCount,
+              ],
+
+              backgroundColor: ["#0b5c8e", "#20bf6b", "#f7b731"],
+
+              borderRadius: 12,
+
+              borderSkipped: false,
+
+              barThickness: 45,
+            },
+          ],
+        },
+
+        options: {
+          responsive: true,
+
+          maintainAspectRatio: false,
+
+          plugins: {
+            legend: {
+              display: false,
+            },
+          },
+
+          scales: {
+            y: {
+              beginAtZero: true,
+
+              grid: {
+                color: "#edf2f7",
+              },
+
+              ticks: {
+                font: {
+                  family: "Poppins",
+                },
+              },
+            },
+
+            x: {
+              grid: {
+                display: false,
+              },
+
+              ticks: {
+                font: {
+                  family: "Poppins",
+                },
+              },
+            },
+          },
+        },
+      });
+    </script>
+  </body>
+</html>
