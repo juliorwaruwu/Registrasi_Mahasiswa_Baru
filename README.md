@@ -244,6 +244,7 @@ Analystic
 - chart count by prody
 - search bar on the top of the table list mahasiswa
 - no registrasi yang otomatis dalam tabel
+  
 ===========================================
 
 AUTHOR
@@ -253,4 +254,4 @@ Developed by:
 Julior Putra Waruwu
 
 Infromation Technology Student
-"""
+
